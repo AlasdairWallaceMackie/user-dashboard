@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/style.css">
+
+</head>
+<body>
+    <main>
+        <nav class="navbar navbar-light navbar-expand-sm">
+            <div class="container-fluid border-bottom mx-lg-5">
+                <a class="navbar-brand" href="#">The User Dashboard</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/signin" class="nav-link active">Sign In</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <fieldset class="container col-sm-4 mt-5">
+            <legend>Register</legend>
+            <form class="mb-3">
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="email" name="email" id="email" placeholder="name@example.com">
+                    <label for="email">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="text" name="first_name" id="first_name" placeholder="First Name">
+                    <label for="first_name">First Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="text" name="last_name" id="last_name" placeholder="Last Name">
+                    <label for="last_name">Last Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="password" name="confirm" id="confirm" placeholder="Confirm">
+                    <label for="confirm">Confirm</label>
+                </div>
+                <button class="btn btn-success">Register</button>
+            </form>
+            <a href="#"><p class="text-center">Already have an account? Login here</p></a>
+        </fieldset>
+    </main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>
