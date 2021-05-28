@@ -31,7 +31,8 @@
 
         <fieldset class="container col-sm-4 mt-5">
             <legend>Register</legend>
-            <form class="mb-3">
+            <form class="mb-3" action="/users/create" method="POST">
+                {% csrf_token %}
                 <div class="form-floating mb-3">
                     <input class="form-control" type="email" name="email" id="email" placeholder="name@example.com">
                     <label for="email">Email address</label>
@@ -52,9 +53,9 @@
                     <input class="form-control" type="password" name="confirm" id="confirm" placeholder="Confirm">
                     <label for="confirm">Confirm</label>
                 </div>
-                <button class="btn btn-success">Register</button>
+                <input type="submit" class="btn btn-success">Register</input>
             </form>
-            <a href="#"><p class="text-center">Already have an account? Login here</p></a>
+            <a href="/signin"><p class="text-center">Already have an account? Login here</p></a>
         </fieldset>
     </main>
 
