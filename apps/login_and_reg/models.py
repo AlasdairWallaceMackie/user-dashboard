@@ -26,7 +26,7 @@ class User_Manager(models.Manager):
                 errors['password_no_match'] = "Password fields do not match"
 
         if 'user_level' in post_data:
-            if post_data['user_level'] < 0 or post_data['user_level'] > 9:
+            if int(post_data['user_level']) < 0 or int(post_data['user_level']) > 9:
                 errors['user_level'] = "Invalid user_level"
 
         return errors
@@ -55,6 +55,9 @@ class User(models.Model):
             '9': "Owner",
             '7': "Admin",
             '1': "Normal",
-            '0': "Unregistered",
+            '0': "Deactivated",
         }
         return roles[ str(self.user_level) ]
+
+    def date_year_created(self):
+        return self.created_at.date().strftime('%b %-d, %Y')

@@ -9,24 +9,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/style.css">
-
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 </head>
 <body>
     <main>
         <nav class="navbar navbar-light navbar-expand-sm">
             <div class="container-fluid border-bottom mx-lg-5">
-                <a class="navbar-brand" href="#">The User Dashboard</a>
+                <a class="navbar-brand" href="/">The User Dashboard</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">Dashboard</a>
+                            <a href="/dashboard" class="nav-link">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">Profile</a>
+                            <a href="/my_profile" class="nav-link active">Profile</a>
                         </li>
                         <li class="nav-item">
                             <a href="/logout" class="nav-link">Log Out</a>
@@ -37,24 +37,79 @@
         </nav>
 
         <div class="container">
-            <h4 class="display-4">
+            <h4 class="display-6 mb-3">
                 {% if own_profile %}
-                    Edit Profile
+                    Edit Your Profile
                 {% else %}
                     Edit user #: {{user.id}}
                 {% endif %}
             </h4>
             
-            <div class="container d-flex justify-content-evenly">
-                <fieldset>
+            <div class="container d-flex justify-content-evenly flex-wrap mb-3">
+                <fieldset class="mb-3 mb-0-md">
                     <legend>Edit Information</legend>
                     <form action="/">
-            
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="email">Email:</label>
+                            <input class="form-control" type="text" name="email" id="email" value="{{user.email}}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="first_name">First Name:</label>
+                            <input class="form-control" type="text" name="first_name" id="first_name" value="{{user.first_name}}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="last_name">Last Name:</label>
+                            <input class="form-control" type="text" name="last_name" id="last_name" value="{{user.last_name}}">
+                        </div>
+
+                        {% if admin %}
+                            <div class="mb-3">
+                                <label class="form-label fst-italic" for="user_level">Change User Level:</label>
+                                <select class="form-select" name="user_level" id="user_level">
+                                    <option value="" selected disabled>Current level: {{user.role}}</option>
+                                    <option value="1">Normal</option>
+                                    <option value="7">Admin</option>
+                                </select>
+                            </div>
+                        {% endif %}
+
+                        <button class="btn btn-success">Save</button>
+                    </form>
+                </fieldset>
+                <fieldset>
+                    <legend>Change Password</legend>
+                    <form action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="password">Password:</label>
+                            <input class="form-control" type="password" name="password" id="password">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="confirm">Confirm:</label>
+                            <input class="form-control" type="password" name="confirm" id="confirm">
+                        </div>
+
+                        <button class="btn btn-success">Update Password</button>
                     </form>
                 </fieldset>
             </div>
+            {% if own_profile %}
+                <div class="container">
+                    <fieldset>
+                        <legend>Edit Description</legend>
+                        <form action="">
+                            {% csrf_token %}
+                            <textarea class="form-control mb-3" name="description" cols="20" rows="5"></textarea>
+                            <button class="btn btn-success">Save</button>
+                        </form>
+                    </fieldset>
+                </div>
+            {% endif %}
         </div>
-
     </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

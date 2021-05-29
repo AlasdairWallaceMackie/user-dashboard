@@ -5,7 +5,14 @@ from django.contrib import messages
 import bcrypt
 
 def home(request):
-    return render(request, 'home.html')
+    context = {
+        'logged_in': False
+    }
+
+    if 'current_user_id' in request.session:
+        context['logged_in'] = True
+
+    return render(request, 'home.html', context)
 
 def signin_page(request):
     return render(request, 'signin.html')
@@ -45,25 +52,35 @@ def my_profile(request):
 
 def new_user(request):
     if request.session['user_level'] >= 7:
-        return render(request, '/users/new')
+        return render(request, 'new_user.html')
     else:
         return redirect('/dashboard')
 
 def edit_user(request, id):
-    user = User.objects.get(id = request.session['current_user_id'])
-    context = {
-        'user': user,
-    }
 
-    if user.id == id:
-        context['own_profile'] = True
-    elif user.user_level >= 7:
-        context['own_profile'] = False
-    else:
-        return redirect('/')
+    if 'current_user_id' in request.session:
+        try:
+            user = User.objects.get(id = id)
+        except:
+            messages.error(request, "User not found")
+            return redirect('/error_404')
 
-    return render(request, 'edit_user.html', context)
-    
+        context = {
+            'user': user,
+            'own_profile': False,
+            'admin': False,
+        }
+
+        if id == request.session['current_user_id']:
+            context['own_profile'] = True
+        
+        if request.session['user_level'] >= 7:
+            context['admin'] = True
+
+        if context['admin'] == True or context['own_profile'] == True:
+            return render(request, 'edit_user.html', context)
+
+    return redirect('/')
 
 def create_user(request):
     if request.method=="POST":
@@ -100,36 +117,23 @@ def create_user(request):
 def create_hash(plain_password):
     return bcrypt.hashpw( plain_password.encode(), bcrypt.gensalt() ).decode()
 
-def OLDcreate_user(request):
-    if request.method=="POST":
-        errors = User.objects.basic_validator(request.POST)
-
-        if errors:
-            for k,v in errors.items():
-                messages.error(request, v)
-            return redirect('/')
-
-        hash = bcrypt.hashpw( request.POST['password'].encode(), bcrypt.gensalt() ).decode()
-
-        new_user = User.objects.create(
-            first_name = request.POST['first_name'],
-            last_name = request.POST['last_name'],
-            email = request.POST['email'],
-            password = hash
-        )
-        return redirect(f'/users/{new_user.id}')
-
-    return redirect('/')
-
 def show_user(request, id):
-    context = {}
-    try:
-        context['user'] = User.objects.get(id = id)
-    except:
-        error_404(request, "User not found")
-        return False
+    if 'current_user_id' in request.session:
+        context = {
+            'admin': False
+        }
+        try:
+            context['user'] = User.objects.get(id = id)
+        except:
+            messages.error(request, "User not found")
+            return redirect('/error')
 
-    return render(request, 'user_page.html', context)
+        if request.session['user_level'] >= 7:
+            context['admin'] = True
+
+        return render(request, 'user_page.html', context)
+    else:
+        return redirect('/signin')
 
 def update_user(request, id):
     if request.method=="POST":
@@ -156,7 +160,7 @@ def update_user(request, id):
 
 def my_profile(request):
     if 'current_user_id' in request.session:
-        return redirect(f"/users/{request.session['current_user_id']}")
+        return redirect(f"/users/{request.session['current_user_id']}/edit")
     else:
         return redirect('/')
 
@@ -166,11 +170,8 @@ def deactivate_user(request, id):
     #All messages and comments should appear as "user deleted" or "deleted comment"
     return redirect('/dashboard')
 
-def error_404(request, message):
-    context = {
-        'message': message
-    }
-    return render(request, 'error_404.html', context)
+def error_404(request):
+    return render(request, 'error_404.html')
 
 def logout(request):
     request.session.flush()
