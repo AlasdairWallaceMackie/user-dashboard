@@ -36,80 +36,89 @@
             </div>
         </nav>
 
-        <div class="container">
+        {% if messages %}
+            <div class="container col-2 bg-success text-white">
+                {% for message in messages %}
+                    <p>{{message}}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="container col-8 mb-3 d-flex justify-content-between align-items-center">
             <h4 class="display-6 mb-3">
                 {% if own_profile %}
                     Edit Your Profile
                 {% else %}
-                    Edit user #: {{user.id}}
+                    Edit user ID: {{user.id}}
                 {% endif %}
             </h4>
+            <a class="btn btn-primary" href="/dashboard">Return to Dashboard</a>
+        </div>
             
-            <div class="container d-flex justify-content-evenly flex-wrap mb-3">
-                <fieldset class="mb-3 mb-0-md">
-                    <legend>Edit Information</legend>
-                    <form action="/">
+        <div class="container d-flex justify-content-evenly flex-wrap mb-3">
+            <fieldset class="mb-3 mb-0-md">
+                <legend>Edit Information</legend>
+                <form action="update" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fst-italic" for="email">Email:</label>
+                        <input class="form-control" type="text" name="email" id="email" value="{{user.email}}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fst-italic" for="first_name">First Name:</label>
+                        <input class="form-control" type="text" name="first_name" id="first_name" value="{{user.first_name}}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fst-italic" for="last_name">Last Name:</label>
+                        <input class="form-control" type="text" name="last_name" id="last_name" value="{{user.last_name}}">
+                    </div>
+
+                    {% if admin %}
+                        <div class="mb-3">
+                            <label class="form-label fst-italic" for="user_level">Change User Level:</label>
+                            <select class="form-select" name="user_level" id="user_level">
+                                <option value="" selected disabled>Current level: {{user.role}}</option>
+                                <option value="1">Normal</option>
+                                <option value="7">Admin</option>
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    <button class="btn btn-success">Save</button>
+                </form>
+            </fieldset>
+            <fieldset>
+                <legend>Change Password</legend>
+                <form action="update" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fst-italic" for="password">Password:</label>
+                        <input class="form-control" type="password" name="password" id="password">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fst-italic" for="confirm">Confirm:</label>
+                        <input class="form-control" type="password" name="confirm" id="confirm">
+                    </div>
+
+                    <button class="btn btn-success">Update Password</button>
+                </form>
+            </fieldset>
+        </div>
+        {% if own_profile %}
+            <div class="container">
+                <fieldset>
+                    <legend>Edit Description</legend>
+                    <form action="update" method="POST">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label fst-italic" for="email">Email:</label>
-                            <input class="form-control" type="text" name="email" id="email" value="{{user.email}}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fst-italic" for="first_name">First Name:</label>
-                            <input class="form-control" type="text" name="first_name" id="first_name" value="{{user.first_name}}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fst-italic" for="last_name">Last Name:</label>
-                            <input class="form-control" type="text" name="last_name" id="last_name" value="{{user.last_name}}">
-                        </div>
-
-                        {% if admin %}
-                            <div class="mb-3">
-                                <label class="form-label fst-italic" for="user_level">Change User Level:</label>
-                                <select class="form-select" name="user_level" id="user_level">
-                                    <option value="" selected disabled>Current level: {{user.role}}</option>
-                                    <option value="1">Normal</option>
-                                    <option value="7">Admin</option>
-                                </select>
-                            </div>
-                        {% endif %}
-
+                        <textarea class="form-control mb-3" name="description" cols="20" rows="5">{{user.description}}</textarea>
                         <button class="btn btn-success">Save</button>
                     </form>
                 </fieldset>
-                <fieldset>
-                    <legend>Change Password</legend>
-                    <form action="">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label fst-italic" for="password">Password:</label>
-                            <input class="form-control" type="password" name="password" id="password">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fst-italic" for="confirm">Confirm:</label>
-                            <input class="form-control" type="password" name="confirm" id="confirm">
-                        </div>
-
-                        <button class="btn btn-success">Update Password</button>
-                    </form>
-                </fieldset>
             </div>
-            {% if own_profile %}
-                <div class="container">
-                    <fieldset>
-                        <legend>Edit Description</legend>
-                        <form action="">
-                            {% csrf_token %}
-                            <textarea class="form-control mb-3" name="description" cols="20" rows="5"></textarea>
-                            <button class="btn btn-success">Save</button>
-                        </form>
-                    </fieldset>
-                </div>
-            {% endif %}
-        </div>
+        {% endif %}
     </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

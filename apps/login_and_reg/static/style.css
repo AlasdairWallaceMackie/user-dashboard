@@ -1,3 +1,11 @@
 textarea{
     resize: none;
 }
+
+#user-info *{
+    margin: 0;
+    padding: 0;
+}
+#user-info td{
+    padding: 5px 10px;
+}

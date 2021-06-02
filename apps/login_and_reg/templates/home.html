@@ -19,13 +19,18 @@
                         <li class="nav-item">
                             <a href="/" class="nav-link active">Home</a>
                         </li>
+                        {% if logged_in %}
                         <li class="nav-item">
-                            {% if logged_in %}
                                 <a href="/logout" class="nav-link">Log Out</a>
-                            {% else %}
-                                <a href="/signin" class="nav-link">Sign In</a>
-                            {% endif %}
                         </li>
+                        {% else %}
+                            <li>
+                                <a href="/register" class="nav-link">Register</a>
+                            </li>
+                            <li>
+                                <a href="/signin" class="nav-link">Sign In</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

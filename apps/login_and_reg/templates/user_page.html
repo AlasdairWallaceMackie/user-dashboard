@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <main>
@@ -22,7 +24,9 @@
                         <li class="nav-item">
                             <a href="/my_profile" class="nav-link">Profile</a>
                         </li>
-                    </ul>
+                        <li class="nav-item">
+                            <a href="/logout" class="nav-link">Log Out</a>
+                        </li>
                 </div>
             </div>
         </nav>
@@ -30,14 +34,45 @@
         {% if admin %}
             <a href="/users/{{user.id}}/edit"><button class="btn btn-warning">Edit this User</button></a>
         {% endif %}
-        <h4>{{user.get_full_name}}</h4>
-        <p>Registered on: {{user.date_year_created}}</p>
-        <p>User ID: {{user.id}}</p>
-        <p>Email: {{user.email}}</p>
-        <p>Description: {{user.description}}</p>
+        <table id="user-info">
+            <thead>
+                <h4>{{user.get_full_name}}</h4>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="{% static 'img/clipboard.svg' %}"></td>
+                    <td><p>Registered on: {{user.date_year_created}}</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static 'img/person-badge.svg' %}"></td>
+                    <td><p>User ID: {{user.id}}</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static 'img/envelope.svg' %}"></td>
+                    <td><p>Email: {{user.email}}</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static 'img/pencil.svg' %}"></td>
+                    <td><p>Description:</p></td>
+                </tr>
+                
+                
+                
+            </tbody>
+            
+        </table>
+        <div>
+            <p>{{user.description}}</p>
+        </div>
         {% if user.description == "" %}
             <i>User hasn't added a description yet!</i>
         {% endif %}
+        
+        <div id="messages bg-success">
+            {% for message in messages %}
+                {{message}}
+            {% endfor %}
+        </div>
 
     </main>
 

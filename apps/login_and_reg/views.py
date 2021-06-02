@@ -23,8 +23,12 @@ def signin_user(request):
         try:
             user = User.objects.get(email = request.POST['email'])
         except:
-            messages.error(request, "Email does not exist")
+            if request.POST['email'] == "":
+                messages.error(request, "Please enter an email address")
+            else:
+                messages.error(request, "Email does not exist")
             errors = True
+            return redirect('/signin')
 
         if not bcrypt.checkpw( request.POST['password'].encode(), user.password.encode()):
             messages.error(request, "Incorrect password")
@@ -87,9 +91,10 @@ def create_user(request):
         errors = User.objects.basic_validator(request.POST)
 
         if errors:
+            print("Errors found when creating user")
             for k,v in errors.items():
                 messages.error(request, v)
-            return redirect('/')
+            return redirect(f"/{request.POST['current_url']}")
 
         hash = create_hash(request.POST['password'])
 
@@ -108,11 +113,13 @@ def create_user(request):
             user_level = user_level
         )
 
+        print(f"New user created! ID: {new_user.id}, Email: {new_user.email}")
+        messages.success(request, "Account created!")
         if 'current_user_id' not in request.session:
             request.session['current_user_id'] = new_user.id
         return redirect(f'/users/{new_user.id}')
 
-    return redirect('/')
+    return redirect(f"/{request.POST['current_url']}")
 
 def create_hash(plain_password):
     return bcrypt.hashpw( plain_password.encode(), bcrypt.gensalt() ).decode()
@@ -136,9 +143,14 @@ def show_user(request, id):
         return redirect('/signin')
 
 def update_user(request, id):
+    #verify admin or id matches session
+
+
     if request.method=="POST":
+        print("Attempting to update user. Validating...")
         errors = User.objects.basic_validator(request.POST)
         if errors:
+            print("Errors found when updating user")
             for k,v in errors.items():
                 messages.error(request, v)
         else:
@@ -156,7 +168,7 @@ def update_user(request, id):
 
             user.save()
             messages.success(request, "Account updated!")
-    return redirect(f"users/{id}")
+    return redirect(f"/users/{id}/edit")
 
 def my_profile(request):
     if 'current_user_id' in request.session:
@@ -168,7 +180,7 @@ def deactivate_user(request, id):
     #Check if logged in user is an admin
     #Don't delete, instead deactivate
     #All messages and comments should appear as "user deleted" or "deleted comment"
-    return redirect('/dashboard')
+    return HttpResponse(f"<h2>Placeholder to delete user id: {id}</h2>")
 
 def error_404(request):
     return render(request, 'error_404.html')
