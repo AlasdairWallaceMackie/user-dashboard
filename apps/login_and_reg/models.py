@@ -43,6 +43,10 @@ class User(models.Model):
         # 1: Normal
         # 0: Unregistered
 
+    #Foreign Keys:
+        # messages
+        # messages_posted
+        # comments
     objects = User_Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,6 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from .models import *
+from ..dashboard.models import *
 from django.contrib import messages
 import bcrypt
 
@@ -148,13 +149,23 @@ def update_user(request, id):
 
     if request.method=="POST":
         print("Attempting to update user. Validating...")
+        try:
+            user = User.objects.get(id = id)
+        except:
+            return HttpResponse("<h2>Error: User not found</h2>")
+        
         errors = User.objects.basic_validator(request.POST)
+
+        if 'email' in request.POST:
+            if request.POST['email'].lower() == user.email:
+                errors.pop('duplicate_email')
+
         if errors:
             print("Errors found when updating user")
             for k,v in errors.items():
                 messages.error(request, v)
         else:
-            user = User.objects.get(id = id)
+
             if 'password' in request.POST:
                 user.password = create_hash(request.POST['password'])
 
@@ -188,3 +199,32 @@ def error_404(request):
 def logout(request):
     request.session.flush()
     return redirect('/')
+
+def post_message(request, id):
+    if request.method == "POST":
+        errors = Message.objects.basic_validator(request.POST)
+
+        if errors:
+            for k,v in errors.items():
+                messages.error(request, v)
+        else:
+            if 'message_id' in request.POST:
+                Comment.objects.create(
+                    text = request.POST['text'],
+                    message = Message.objects.get(id = request.POST['message_id']),
+                    author = User.objects.get(id = request.session['current_user_id']),
+                )
+            else:
+                try:
+                    recipient = User.objects.get(id = id)
+                except:
+                    messages.error("User not found")
+                    return redirect('error')
+
+                Message.objects.create(
+                    text = request.POST['text'],
+                    recipient = recipient,
+                    author = User.objects.get(id = request.session['current_user_id'])
+                )
+
+    return redirect(f'/users/{id}')

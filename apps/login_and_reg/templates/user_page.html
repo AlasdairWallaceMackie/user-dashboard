@@ -9,71 +9,109 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <main>
-        <nav class="navbar navbar-light navbar-expand-sm">
-            <div class="container-fluid border-bottom mx-lg-5">
-                <a class="navbar-brand" href="/">The User Dashboard</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="/dashboard" class="nav-link">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/my_profile" class="nav-link">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/logout" class="nav-link">Log Out</a>
-                        </li>
-                </div>
+    
+    <nav class="navbar navbar-light navbar-expand-sm">
+        <div class="container-fluid border-bottom mx-lg-5">
+            <a class="navbar-brand" href="/">The User Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="/dashboard" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/my_profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Log Out</a>
+                    </li>
             </div>
-        </nav>
-
-        {% if admin %}
-            <a href="/users/{{user.id}}/edit"><button class="btn btn-warning">Edit this User</button></a>
-        {% endif %}
-        <table id="user-info">
-            <thead>
-                <h4>{{user.get_full_name}}</h4>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><img src="{% static 'img/clipboard.svg' %}"></td>
-                    <td><p>Registered on: {{user.date_year_created}}</p></td>
-                </tr>
-                <tr>
-                    <td><img src="{% static 'img/person-badge.svg' %}"></td>
-                    <td><p>User ID: {{user.id}}</p></td>
-                </tr>
-                <tr>
-                    <td><img src="{% static 'img/envelope.svg' %}"></td>
-                    <td><p>Email: {{user.email}}</p></td>
-                </tr>
-                <tr>
-                    <td><img src="{% static 'img/pencil.svg' %}"></td>
-                    <td><p>Description:</p></td>
-                </tr>
-                
-                
-                
-            </tbody>
-            
-        </table>
-        <div>
-            <p>{{user.description}}</p>
         </div>
-        {% if user.description == "" %}
-            <i>User hasn't added a description yet!</i>
+    </nav>
+
+    <main>
+        {% if messages %}
+            <div class="bg-success">
+                {% for message in messages %}
+                    <p>{{message}}</p>
+                {% endfor %}
+            </div>
         {% endif %}
-        
-        <div id="messages bg-success">
-            {% for message in messages %}
-                {{message}}
+        {% if admin %}
+            <a href="/users/{{user.id}}/edit"><button class="btn btn-warning mt-2 ms-5">Edit this User</button></a>
+        {% endif %}
+        <div class="ms-5 my-3">
+            <table id="user-info">
+                <thead>
+                    <h4>{{user.get_full_name}}</h4>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="{% static 'img/clipboard.svg' %}"></td>
+                        <td><p>Registered on: {{user.date_year_created}}</p></td>
+                    </tr>
+                    <tr>
+                        <td><img src="{% static 'img/person-badge.svg' %}"></td>
+                        <td><p>User ID: {{user.id}}</p></td>
+                    </tr>
+                    <tr>
+                        <td><img src="{% static 'img/envelope.svg' %}"></td>
+                        <td><p>Email: {{user.email}}</p></td>
+                    </tr>
+                    <tr>
+                        <td><img src="{% static 'img/pencil.svg' %}"></td>
+                        {% if user.description == "" %}
+                            <td><p><i>User hasn't added a description yet!</i></p></td>
+                        {% else %}
+                            <td><p>Description: <i>{{user.description}}</i></p></td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
+
+        <div id="messages" class="container col-8">
+            <form action="{{user.id}}/post_message" method="POST">
+                {% csrf_token %}
+                <h5>Leave a message for {{user.first_name}}</h5>
+                <textarea name="text" class="d-block" cols="60" rows="2"></textarea>
+                <button class="btn btn-success">Post</button>
+            </form>
+            {% for message in user.messages.all %}
+                <div class="container">
+                    <div class="container d-flex justify-content-between">
+                        <p><a href="/users/{{message.author.id}}">{{message.author.get_full_name}}</a> wrote:</p>
+                        <p><small><i>{{message.time_passed}}</i></small></p>
+                    </div>
+                    <p>{{message.text}}</p>
+                    {% if message.author.id == request.session.current_user_id %}
+                        <form action="#">
+                            {% csrf_token %}
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <div class="container float-end">
+                    {% for comment in message.comments.all %}
+                        <div class="container d-flex justify-content-between">
+                            <p><a href="/users/{{comment.author.id}}">{{comment.author.get_full_name}}</a> wrote:</p>
+                            <p><small><i>{{message.time_passed}}</i></small></p>
+                        </div>
+                    <p>{{comment.text}}</p>
+                    {% endfor %}
+                    <form action="{{user.id}}/post_message" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="message_id" value="{{message.id}}">
+                        <textarea name="text" cols="30" rows="2" class="d-block" placeholder="Write a comment..."></textarea>
+                        <button class="btn btn-success">Post</button>
+                    </form>
+                </div>
             {% endfor %}
         </div>
-
+        
     </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

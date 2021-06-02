@@ -49,11 +49,13 @@
         </fieldset>
 
         {% if messages %}
-            <ul class="bg-danger col-3">
-                {% for message in messages %}
-                    <li>{{message}}</li>
-                {% endfor %}
-            </ul>
+            <div class="container bg-warning col-3">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
     </main>
 

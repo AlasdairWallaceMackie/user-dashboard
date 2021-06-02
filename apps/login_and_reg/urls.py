@@ -14,5 +14,6 @@ urlpatterns = [
     path('users/<int:id>/edit', views.edit_user, name="edit_user"),
     path('users/<int:id>/update', views.update_user, name="update_user"),
     path('users/<int:id>/destroy', views.deactivate_user, name="deactivate_user"),
+    path('users/<int:id>/post_message', views.post_message, name="post_message"),
     path('error', views.error_404, name="error_404"),
 ]
