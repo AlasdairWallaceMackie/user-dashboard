@@ -16,4 +16,5 @@ urlpatterns = [
     path('users/<int:id>/destroy', views.deactivate_user, name="deactivate_user"),
     path('users/<int:id>/post_message', views.post_message, name="post_message"),
     path('error', views.error_404, name="error_404"),
+    path('duplicate_email', views.duplicate_email, name="duplicate_email")
 ]

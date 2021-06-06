@@ -1,4 +1,4 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from .models import *
 from ..dashboard.models import *
@@ -45,6 +45,18 @@ def signin_user(request):
 
 def register(request):
     return render(request, 'register.html')
+
+def duplicate_email(request):
+    if request.method=="GET":
+        print(f"CHecking for duplicate email: {request.GET['email']}")
+        print(f"Data: {request.GET}")
+        email = request.GET['email']
+
+        if email:
+            return JsonResponse( {'duplicate': User.objects.filter(email = email).exists()} )
+    
+    return redirect('/')
+
 
 def my_profile(request):
     context = {}
@@ -226,5 +238,4 @@ def post_message(request, id):
                     recipient = recipient,
                     author = User.objects.get(id = request.session['current_user_id'])
                 )
-
     return redirect(f'/users/{id}')
