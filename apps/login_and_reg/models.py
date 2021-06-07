@@ -67,10 +67,19 @@ class User(models.Model):
         return self.created_at.date().strftime('%b %-d, %Y')
 
     def most_recent_post(self):
-        recent_message = self.messages.order_by('-created_at').first()
+
+        recent_message = self.messages_posted.order_by('-created_at').first()
         recent_comment = self.comments.order_by('-created_at').first()
 
-        if recent_message.created_at > recent_comment.created_at:
+        if recent_message != None and recent_comment == None:
             return recent_message
-        else:
+        elif recent_comment != None and recent_message == None:
             return recent_comment
+        else:
+            print("Comparing comment times")
+            print(f'Recent message: {recent_message.created_at}')
+            print(f'Recent comment: {recent_comment.created_at}')
+            if recent_message.created_at > recent_comment.created_at:
+                return recent_message
+            else:
+                return recent_comment

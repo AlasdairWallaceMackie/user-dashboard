@@ -153,7 +153,9 @@ def show_user(request, id):
             'can_edit': False
         }
         try:
-            context['user'] = User.objects.get(id = id)
+            current_user = User.objects.get(id = id)
+            context['user'] = current_user
+            context['posted_messages'] = current_user.messages.order_by('-created_at')
         except:
             messages.error(request, "User not found")
             return redirect('/error')
@@ -224,6 +226,7 @@ def logout(request):
 
 def post_message(request, id):
     if request.method == "POST":
+        print("Posting message")
         errors = Message.objects.basic_validator(request.POST)
 
         if errors:
@@ -259,19 +262,26 @@ def set_user_level(request):
 
 def get_newest_post(request):
     if request.method=="GET":
-        try:
-            current_user = User.objects.get(id = request.session['current_user_id'])
-            class_name = current_user.most_recent_post().__class__.__name__.lower()
-            context = {
-                'current_user': current_user,
-                f'{class_name}': current_user.most_recent_post(),
-            }
+        print("Responding to AJAX request")
 
-            return JsonResponse({
-                'render': render(request, f"{class_name}.html", context)
-            })
+        current_user = User.objects.get(id = request.session['current_user_id'])
+        class_name = current_user.most_recent_post().__class__.__name__.lower()
+        context = {
+            'current_user': current_user,
+            f'{class_name}': current_user.most_recent_post(),
+            'user': User.objects.get(id = request.GET['user_id'])
+        }
+        print("Sending newest_post")
+        return HttpResponse(render(request, f"util/{class_name}.html", context))
+        # return JsonResponse({
+        #     'render': render(request, f"util/{class_name}.html", context),
+        #     'class_name': class_name,
+        # })
+
+        try:
+            pass
 
         except:
-            pass
+            print("Error during get_newest_post ajax request")
     
     return redirect("/")

@@ -1,4 +1,4 @@
-<html>
+<div class="post">
     <div class="card mb-3">
         <div class="card-header d-flex justify-content-between">
             <h5><a href="/users/{{message.author.id}}" class="text-success"><strong>{{message.author.get_full_name}}</strong></a> wrote:</h5>
@@ -17,11 +17,7 @@
             
             <div class="container col-10 float-end">
                 {% for comment in message.comments.all %}
-                    <div class="mb-3">
-                        <p><small><a href="/users/{{comment.author.id}}" class="text-success"><strong>{{comment.author.get_full_name}}</strong></a><i class="text-secondary ms-3">{{message.time_passed}}</i></small></p>
-                        
-                        <p class="ps-5">{{comment.text}}</p>
-                    </div>
+                    {% include 'util/comment.html' %}
                 {% endfor %}
                 <form action="{{user.id}}/post_message" method="POST">
                     {% csrf_token %}
@@ -32,4 +28,4 @@
             </div>
         </div>
     </div>
-</html>
+</div>
