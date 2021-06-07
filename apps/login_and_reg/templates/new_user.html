@@ -9,29 +9,10 @@
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
 </head>
 <body>
-    <main>
-        <nav class="navbar navbar-light navbar-expand-sm">
-            <div class="container-fluid border-bottom mx-lg-5">
-                <a class="navbar-brand" href="/">The User Dashboard</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="/dashboard" class="nav-link active">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/my_profile" class="nav-link">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/logout" class="nav-link">Log out</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
+    {% include 'dash_navbar.html' %}
+
+    <main>
         <fieldset class="container col-sm-4 mt-5">
             <legend>Add a New User</legend>
             <form class="mb-3" action="/users/create" method="POST">
@@ -67,15 +48,8 @@
                 <button class="btn btn-success">Create</button>
             </form>
         </fieldset>
-        {% if messages %}
-            <div class="container col-4 bg-warning">
-                <ul>
-                    {% for message in messages %}
-                        <li>{{message}}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+
+        {% include 'alerts.html' %}
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

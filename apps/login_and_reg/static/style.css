@@ -1,5 +1,6 @@
 textarea{
     resize: none;
+    /* border-radius: 10px; */
 }
 
 #user-info *{
@@ -8,4 +9,13 @@ textarea{
 }
 #user-info td{
     padding: 5px 10px;
+}
+
+#messages a{
+    text-decoration: none;
+}
+
+.card-body p{
+    margin: 0;
+    padding: 0;
 }

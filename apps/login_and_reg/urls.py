@@ -7,6 +7,7 @@ urlpatterns = [
     path('logout', views.logout, name="logout"),
     path('register', views.register, name="register"),
     path('my_profile', views.my_profile, name="my_profile"),
+    path('my_page', views.my_page, name="my_page"),
     path('users/signin', views.signin_user, name="signin_user"),
     path('users/new', views.new_user, name="new_user"),
     path('users/create', views.create_user, name="create_user"),
@@ -16,5 +17,6 @@ urlpatterns = [
     path('users/<int:id>/destroy', views.deactivate_user, name="deactivate_user"),
     path('users/<int:id>/post_message', views.post_message, name="post_message"),
     path('error', views.error_404, name="error_404"),
-    path('duplicate_email', views.duplicate_email, name="duplicate_email")
+    path('newest_post', views.get_newest_post, name="get_newest_post"),
+
 ]

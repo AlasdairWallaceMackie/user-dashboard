@@ -9,36 +9,10 @@
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
 </head>
 <body>
+
+    {% include 'navbar.html' %}
+
     <main>
-        <nav class="navbar navbar-light navbar-expand-sm">
-            <div class="container-fluid border-bottom mx-lg-5">
-                <a class="navbar-brand" href="/">The User Dashboard</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link active">Home</a>
-                        </li>
-                        {% if logged_in %}
-                        <li class="nav-item">
-                                <a href="/logout" class="nav-link">Log Out</a>
-                        </li>
-                        {% else %}
-                            <li>
-                                <a href="/register" class="nav-link">Register</a>
-                            </li>
-                            <li>
-                                <a href="/signin" class="nav-link">Sign In</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-
         <div id="notice" class="container bg-light p-3 mt-3">
                 <h1 class="display-6">Welcome to The Test</h1>
                 <p class="lead">This is an example Django project, styled with Bootstrap</p>
@@ -65,14 +39,9 @@
             </div>
         </div>
 
+        {% include 'alerts.html' %}
     </main>
-    {% if messages %}
-        <ul class="bg-warning">
-            {% for message in messages %}
-                <li>{{message}}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -1,0 +1,9 @@
+<html>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="container alert shadow col-4 text-center d-none {{message.tags}}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+</html>

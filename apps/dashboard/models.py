@@ -35,3 +35,4 @@ class Comment(models.Model):
 
     def time_passed(self):
         return "Time passed placeholder"
+        #add hover to see actual time?

@@ -11,37 +11,13 @@
 </head>
 <body>
     
-    <nav class="navbar navbar-light navbar-expand-sm">
-        <div class="container-fluid border-bottom mx-lg-5">
-            <a class="navbar-brand" href="/">The User Dashboard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="/dashboard" class="nav-link">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/my_profile" class="nav-link">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/logout" class="nav-link">Log Out</a>
-                    </li>
-            </div>
-        </div>
-    </nav>
+    {% include 'dash_navbar.html' %}
 
     <main>
-        {% if messages %}
-            <div class="bg-success">
-                {% for message in messages %}
-                    <p>{{message}}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% if admin %}
-            <a href="/users/{{user.id}}/edit"><button class="btn btn-warning mt-2 ms-5">Edit this User</button></a>
+        {% include 'alerts.html' %}
+
+        {% if can_edit %}
+            <a href="/users/{{user.id}}/edit"><button class="btn btn-warning mt-2 ms-5">Edit This Profile</button></a>
         {% endif %}
         <div class="ms-5 my-3">
             <table id="user-info">
@@ -74,41 +50,46 @@
             </table>
         </div>
 
-        <div id="messages" class="container col-8">
-            <form action="{{user.id}}/post_message" method="POST">
+        <div id="messages" class="container col-7">
+            <form id="submit-message" action="{{user.id}}/post_message" method="POST" class="mb-3">
                 {% csrf_token %}
                 <h5>Leave a message for {{user.first_name}}</h5>
-                <textarea name="text" class="d-block" cols="60" rows="2"></textarea>
+                <textarea name="text" class="form-control d-block mb-2" cols="30" rows="2" minlength="1"></textarea>
                 <button class="btn btn-success">Post</button>
             </form>
             {% for message in user.messages.all %}
-                <div class="container">
-                    <div class="container d-flex justify-content-between">
-                        <p><a href="/users/{{message.author.id}}">{{message.author.get_full_name}}</a> wrote:</p>
-                        <p><small><i>{{message.time_passed}}</i></small></p>
-                    </div>
-                    <p>{{message.text}}</p>
-                    {% if message.author.id == request.session.current_user_id %}
-                        <form action="#">
-                            {% csrf_token %}
-                            <button class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    {% endif %}
-                </div>
-                <div class="container float-end">
-                    {% for comment in message.comments.all %}
-                        <div class="container d-flex justify-content-between">
-                            <p><a href="/users/{{comment.author.id}}">{{comment.author.get_full_name}}</a> wrote:</p>
-                            <p><small><i>{{message.time_passed}}</i></small></p>
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5><a href="/users/{{message.author.id}}" class="text-success"><strong>{{message.author.get_full_name}}</strong></a> wrote:</h5>
+                        <div>
+                            <p class="text-secondary m-0"><small><i>{{message.time_passed}}</i></small></p>
+                            {% if message.author.id == request.session.current_user_id %}
+                            <form action="#">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        {% endif %}
                         </div>
-                    <p>{{comment.text}}</p>
-                    {% endfor %}
-                    <form action="{{user.id}}/post_message" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="message_id" value="{{message.id}}">
-                        <textarea name="text" cols="30" rows="2" class="d-block" placeholder="Write a comment..."></textarea>
-                        <button class="btn btn-success">Post</button>
-                    </form>
+                    </div>
+                    <div class="card-body">
+                        <p class="ms-4 mb-2">{{message.text}}</p>
+                        
+                        <div class="container col-10 float-end">
+                            {% for comment in message.comments.all %}
+                                <div class="mb-3">
+                                    <p><small><a href="/users/{{comment.author.id}}" class="text-success"><strong>{{comment.author.get_full_name}}</strong></a><i class="text-secondary ms-3">{{message.time_passed}}</i></small></p>
+                                    
+                                    <p class="ps-5">{{comment.text}}</p>
+                                </div>
+                            {% endfor %}
+                            <form action="{{user.id}}/post_message" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="message_id" value="{{message.id}}">
+                                <textarea name="text" cols="30" rows="2" class="d-block form-control mb-2" minlength="1" placeholder="Write a comment..."></textarea>
+                                <button class="btn btn-success">Post</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>

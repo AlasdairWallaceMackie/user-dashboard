@@ -1,0 +1,35 @@
+<html>
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between">
+            <h5><a href="/users/{{message.author.id}}" class="text-success"><strong>{{message.author.get_full_name}}</strong></a> wrote:</h5>
+            <div>
+                <p class="text-secondary m-0"><small><i>{{message.time_passed}}</i></small></p>
+                {% if message.author.id == request.session.current_user_id %}
+                <form action="#">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="ms-4 mb-2">{{message.text}}</p>
+            
+            <div class="container col-10 float-end">
+                {% for comment in message.comments.all %}
+                    <div class="mb-3">
+                        <p><small><a href="/users/{{comment.author.id}}" class="text-success"><strong>{{comment.author.get_full_name}}</strong></a><i class="text-secondary ms-3">{{message.time_passed}}</i></small></p>
+                        
+                        <p class="ps-5">{{comment.text}}</p>
+                    </div>
+                {% endfor %}
+                <form action="{{user.id}}/post_message" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="message_id" value="{{message.id}}">
+                    <textarea name="text" cols="30" rows="2" class="d-block form-control mb-2" minlength="1" placeholder="Write a comment..."></textarea>
+                    <button class="btn btn-success">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>

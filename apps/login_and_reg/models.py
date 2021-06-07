@@ -65,3 +65,12 @@ class User(models.Model):
 
     def date_year_created(self):
         return self.created_at.date().strftime('%b %-d, %Y')
+
+    def most_recent_post(self):
+        recent_message = self.messages.order_by('-created_at').first()
+        recent_comment = self.comments.order_by('-created_at').first()
+
+        if recent_message.created_at > recent_comment.created_at:
+            return recent_message
+        else:
+            return recent_comment
